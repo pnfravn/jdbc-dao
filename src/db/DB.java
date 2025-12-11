@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.Properties;
 
 public class DB {
-a
+
 	private static Connection conn = null;
 	
 	public static Connection getConnection() {
