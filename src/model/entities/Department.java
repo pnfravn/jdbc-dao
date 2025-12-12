@@ -59,12 +59,17 @@ public class Department implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Department other = (Department) obj;
-		return Objects.equals(id, other.id);
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
-
+	
 	@Override
 	public String toString() {
-		return  "Id= " + id + ", DepName= " + name ;
+		return  "Id = " + id + ", DepNamem = " + name ;
 	}
 }
