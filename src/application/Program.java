@@ -28,16 +28,23 @@ public class Program {
 			System.out.println(obj);
 		}
 		
-		System.out.println("\n=== Test 2: seller findAll\t\n");
-		list = sellerDao.findByDepartment(department);
+		System.out.println("=== Test 3: seller findAll\t\n");
+		list = sellerDao.findAll();
 		for (Seller obj:list) {
 			System.out.println(obj);
-			
-		System.out.println("\n=== Test 4: seller Insert \t\n");	
-		Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 40000.0, department );
+		
+		}
+/*		System.out.println("\n=== Test 4: seller Insert \t\n");	
+		Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, department );
 		sellerDao.insert(newSeller);
 		System.out.println("Inserted! New id = " + newSeller.getId());
-		}
+*/
+		
+		System.out.println("\n=== Test 5: seller Update \t\n");
+		seller = sellerDao.findById(36);
+		seller.setName("Martha Waine");
+		sellerDao.update(seller);
+		System.out.println("Done! Update completed");
 	}
 }
 

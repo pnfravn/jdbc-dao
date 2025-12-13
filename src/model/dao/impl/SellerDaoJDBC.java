@@ -29,10 +29,10 @@ public class SellerDaoJDBC implements SellerDao{
 		
 		PreparedStatement st = null;
 		
-		ResultSet rs = null;
+		
 		
 		try {
-			st = conn.prepareStatement("inser into seller (name, email, birthdate, basesalary, departmentId) values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			st = conn.prepareStatement("insert into seller (name, email, birthdate, basesalary, departmentId) values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
 			st.setString(1, obj.getName());
 			st.setString(2, obj.getEmail());
@@ -43,7 +43,7 @@ public class SellerDaoJDBC implements SellerDao{
 			int rowsA = st.executeUpdate();
 			
 			if (rowsA > 0) {
-				rs = st.getGeneratedKeys();
+				ResultSet rs = st.getGeneratedKeys();
 				if (rs.next()) {
 					int id = rs.getInt(1);
 					obj.setId(id);
@@ -56,7 +56,6 @@ public class SellerDaoJDBC implements SellerDao{
 			throw new DbException(sqle.getMessage());
 		}
 		finally {
-			DB.closeResultSet(rs);
 			DB.closeStatement(st);
 		}
 		
@@ -64,8 +63,30 @@ public class SellerDaoJDBC implements SellerDao{
 
 	@Override
 	public void update(Seller obj) {
-		// TODO Auto-generated method stub
+	
+		PreparedStatement st = null;
+		try {
+			
 		
+		st = conn.prepareStatement("update seller set "
+				+ "name = ?, email = ?, birthdate = ?, basesalary = ?, departmentId = ?"
+				+ " where id > ?");
+		
+		st.setString(1, obj.getName());
+		st.setString(2, obj.getEmail());
+		st.setDate(3, new java.sql.Date(obj.getBirthdate().getTime()));
+		st.setDouble(4, obj.getBaseSalary());
+		st.setInt(5, obj.getDepartment().getId());
+		st.setInt(6, obj.getId());
+		
+		st.executeUpdate();
+		
+		} catch (SQLException sqle) {
+			throw new DbException(sqle.getMessage());
+		} 
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
@@ -137,7 +158,7 @@ public class SellerDaoJDBC implements SellerDao{
 					"SELECT seller.*,department.Name as DepName "
 					+ "FROM seller INNER JOIN department "
 					+ "ON seller.DepartmentId = department.Id "
-					+ "ORDER BY Name");
+					+ "order by basesalary");
 			
 			
 			rs = st.executeQuery();
@@ -178,7 +199,7 @@ public class SellerDaoJDBC implements SellerDao{
 					+ "FROM seller INNER JOIN department "
 					+ "ON seller.DepartmentId = department.Id "
 					+ "WHERE DepartmentId = ? "
-					+ "ORDER BY Name");
+					+ "ORDER BY name");
 			
 			st.setInt(1, department.getId());
 			
