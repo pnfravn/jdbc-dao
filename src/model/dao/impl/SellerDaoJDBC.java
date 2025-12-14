@@ -70,7 +70,7 @@ public class SellerDaoJDBC implements SellerDao{
 		
 		st = conn.prepareStatement("update seller set "
 				+ "name = ?, email = ?, birthdate = ?, basesalary = ?, departmentId = ?"
-				+ " where id > ?");
+				+ " where id = ?");
 		
 		st.setString(1, obj.getName());
 		st.setString(2, obj.getEmail());
@@ -91,7 +91,28 @@ public class SellerDaoJDBC implements SellerDao{
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
+		
+		PreparedStatement st = null;
+		
+		
+		try {
+			st = conn.prepareStatement("delete from seller where id = ?");
+			
+			st.setInt(1, id);
+			
+			int rows = st.executeUpdate();
+			
+			if (rows == 0) {
+				throw new DbException("The is no number: '" +id + "' on our database");
+			}
+			
+		}catch(SQLException sqle) {
+			throw new DbException(sqle.getMessage());
+		} finally {
+			
+			DB.closeStatement(st);
+			
+		}
 		
 	}
 
@@ -158,7 +179,7 @@ public class SellerDaoJDBC implements SellerDao{
 					"SELECT seller.*,department.Name as DepName "
 					+ "FROM seller INNER JOIN department "
 					+ "ON seller.DepartmentId = department.Id "
-					+ "order by basesalary");
+					+ "order by name");
 			
 			
 			rs = st.executeQuery();
